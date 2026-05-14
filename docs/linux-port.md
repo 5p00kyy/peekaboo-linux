@@ -30,12 +30,25 @@ The right port is a platform backend split:
 3. Add a Linux backend with explicit display-server support tiers.
 4. Re-enable CLI/MCP tools incrementally as Linux capabilities become real.
 
+## Current Status
+
+- Swift 6.2.1 is installed locally through Swiftly. On Arch Linux,
+  `scripts/linux-env.sh` supplies the `libncurses.so.6` compatibility path needed
+  by the UBI9 Swift toolchain.
+- Submodules are initialized.
+- `Core/PeekabooTypes` builds and tests on Linux.
+- `Apps/LinuxCLI` builds and tests on Linux.
+- The first live Hyprland smoke tests pass:
+  - `peekaboo-linux doctor`
+  - `peekaboo-linux list screens --json`
+  - `peekaboo-linux list windows --json`
+  - `peekaboo-linux image --mode screen --path /tmp/peekaboo-linux-smoke.png`
+
 ## Current Blockers
 
-- Swift is not available in this local Linux environment (`swift: command not found`),
-  so no Linux compile smoke test is possible yet.
-- Submodules are present as gitlinks but are not initialized locally
-  (`AXorcist`, `Commander`, `Tachikoma`, `TauTUI`, `Swiftdansi` are empty).
+- `Swiftdansi` fails on Linux because `Sources/Swiftdansi/Hyperlink.swift`
+  imports `Darwin` unconditionally. Fix it in the submodule repo, then bump the
+  gitlink here.
 - All main packages currently declare macOS-only platforms:
   - root `Package.swift`: `.macOS(.v14)`
   - `Core/PeekabooCore/Package.swift`: `.macOS(.v14)`
@@ -187,21 +200,23 @@ Deferred commands:
 
 ## First Milestones
 
-1. Initialize submodules and install Swift 6.2 on Linux.
-2. Create a compile-only target for portable types.
-3. Replace direct `CoreGraphics` usage in shared model/protocol packages with
+1. Initialize submodules and install Swift 6.2 on Linux. Done.
+2. Create a compile-only target for portable types. Done in `Core/PeekabooTypes`.
+3. Add a standalone Linux CLI for Hyprland state and full-screen capture. Started
+   in `Apps/LinuxCLI`.
+4. Replace direct `CoreGraphics` usage in shared model/protocol packages with
    portable geometry types.
-4. Move macOS concrete services into macOS-only targets without changing CLI
+5. Move macOS concrete services into macOS-only targets without changing CLI
    behavior on macOS.
-5. Build a stub Linux service provider that compiles and returns structured
+6. Build a stub Linux service provider that compiles and returns structured
    `unsupported` errors.
-6. Implement Linux screen capture for full-screen screenshots.
-7. Add AT-SPI element discovery and map roles/bounds into Peekaboo element models.
-8. Add coordinate click/type for one Hyprland-capable backend, preferably uinput
+7. Implement Linux screen capture for full-screen screenshots.
+8. Add AT-SPI element discovery and map roles/bounds into Peekaboo element models.
+9. Add coordinate click/type for one Hyprland-capable backend, preferably uinput
    first for a fast local proof, while keeping libei as the preferred long-term
    architecture.
-9. Run the MCP server on Linux with the reduced tool registry.
-10. Expand to Wayland input only after permission/setup UX is explicit.
+10. Run the MCP server on Linux with the reduced tool registry.
+11. Expand to Wayland input only after permission/setup UX is explicit.
 
 ## Risk Assessment
 

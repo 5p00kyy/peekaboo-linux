@@ -19,26 +19,31 @@ Host:
 
 ## GitHub
 
-The remote fork is not created yet because `gh auth status` reports the active
-GitHub token for `5p00kyy` is invalid.
+The remote fork is created:
 
-Fix:
-
-```bash
-gh auth login -h github.com
+```text
+origin   -> https://github.com/5p00kyy/peekaboo-linux.git
+upstream -> https://github.com/openclaw/Peekaboo.git
 ```
 
-Then create the fork and wire remotes:
+`linux/main` is the fork default branch. The original upstream remote has its
+push URL disabled locally to reduce accidental upstream pushes:
 
 ```bash
-gh repo fork openclaw/Peekaboo --fork-name peekaboo-linux --clone=false --remote=false
-git remote rename origin upstream
-git remote add origin git@github.com:5p00kyy/peekaboo-linux.git
-git push -u origin linux-port-spike
+git remote set-url --push upstream DISABLED
 ```
 
-Adjust the `origin` URL if the fork should live under an organization instead
-of the `5p00kyy` user account.
+Current pushed branches:
+
+```text
+linux/main
+linux/portable-types
+linux/cli-mvp
+```
+
+Current draft PRs:
+
+- <https://github.com/5p00kyy/peekaboo-linux/pull/1>
 
 ## Submodules
 
@@ -97,6 +102,8 @@ swift test
 
 Passing:
 
+- `Core/PeekabooTypes`: 9 tests passed.
+- `Apps/LinuxCLI`: 7 tests passed.
 - `Commander`: 15 tests passed.
 - `TauTUI`: 147 tests passed.
 
@@ -125,6 +132,37 @@ Not yet tested:
 - Peekaboo core packages
 - Peekaboo CLI package
 
+## Linux CLI MVP
+
+The first Linux-specific Swift package lives in `Apps/LinuxCLI`.
+
+Build and test:
+
+```bash
+source scripts/linux-env.sh
+pnpm run build:linux
+pnpm run test:linux
+```
+
+Direct smoke commands:
+
+```bash
+source scripts/linux-env.sh
+swift run --package-path Apps/LinuxCLI peekaboo-linux doctor
+swift run --package-path Apps/LinuxCLI peekaboo-linux list screens --json
+swift run --package-path Apps/LinuxCLI peekaboo-linux list windows --json
+swift run --package-path Apps/LinuxCLI peekaboo-linux image --mode screen --path /tmp/peekaboo-linux-smoke.png
+```
+
+Verified on this host:
+
+- `doctor` finds `hyprctl`, `grim`, `slurp`, `wl-copy`, and `wl-paste`.
+- `list screens --json` reports `DP-1` at `2560x1440`.
+- `list windows --json` reports Hyprland window addresses, app IDs, titles,
+  frames, workspace names, and focused state.
+- `image --mode screen` produced `/tmp/peekaboo-linux-smoke.png`, a `2560x1440`
+  PNG.
+
 ## Useful Local Smoke Commands
 
 ```bash
@@ -136,4 +174,3 @@ grim - | file -
 printf hello | wl-copy
 wl-paste
 ```
-

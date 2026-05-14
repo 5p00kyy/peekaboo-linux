@@ -48,25 +48,22 @@ Primary references:
 The local checkout currently has:
 
 ```text
-origin -> https://github.com/openclaw/Peekaboo.git
-branch -> linux-port-spike
+origin   -> https://github.com/5p00kyy/peekaboo-linux.git
+upstream -> https://github.com/openclaw/Peekaboo.git
 ```
 
-Recommended setup once ready to create the remote fork:
+The fork has been created, `linux/main` is the default branch, and local pushes
+to `upstream` are disabled.
+
+Initial setup commands used:
 
 ```bash
 gh auth status
-gh repo fork openclaw/Peekaboo --fork-name peekaboo-linux --clone=false --remote=false
+gh repo fork openclaw/Peekaboo --fork-name peekaboo-linux --clone=false
 git remote rename origin upstream
-git remote add origin git@github.com:<your-user-or-org>/peekaboo-linux.git
-git fetch upstream
-git push -u origin linux-port-spike
-```
-
-If HTTPS remotes are preferred:
-
-```bash
-git remote add origin https://github.com/<your-user-or-org>/peekaboo-linux.git
+git remote add origin https://github.com/5p00kyy/peekaboo-linux.git
+git remote set-url --push upstream DISABLED
+git push -u origin linux/main linux/portable-types
 ```
 
 After setup:
@@ -88,6 +85,7 @@ linux/main                 long-lived Linux integration branch
 linux/docs-project-plan     planning/docs changes
 linux/bootstrap-toolchain   Swift/submodule/toolchain setup
 linux/portable-types        geometry and platform-neutral model extraction
+linux/cli-mvp               standalone Linux CLI, Hyprland list, grim capture
 linux/service-protocols     portable service protocol split
 linux/stub-services         Linux service provider returning unsupported errors
 linux/hyprland-ipc          hyprctl/socket client and JSON fixtures
@@ -203,6 +201,10 @@ Exit criteria:
 - submodules are populated
 - docs changes pass lint/checks available in this environment
 
+Status: complete locally. The fork exists, remotes are wired, Swift 6.2.1 works
+through `scripts/linux-env.sh`, submodules are initialized, and the initial docs
+are committed on `linux/main`.
+
 ### M1: Portable Core
 
 Goal: create a package surface that can compile without Apple frameworks.
@@ -258,6 +260,10 @@ Tasks:
 Exit criteria:
 
 - monitor/window/workspace JSON fixtures pass tests
+
+Status: started in `Apps/LinuxCLI`. The CLI currently parses `hyprctl -j
+monitors`, `hyprctl -j clients`, and `hyprctl -j activewindow`, with fixture
+tests and a live Hyprland smoke run on this host.
 - live local smoke can list monitors and active window
 
 ### M4: Capture

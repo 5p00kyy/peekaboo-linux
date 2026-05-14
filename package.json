@@ -18,12 +18,14 @@
   "scripts": {
     "build:cli": "swift build --package-path Apps/CLI",
     "build:cli:release": "swift build --configuration release --package-path Apps/CLI",
+    "build:linux": "swift build --package-path Apps/LinuxCLI",
     "build:swift": "./scripts/build-swift-arm.sh",
     "build:swift:all": "./scripts/build-swift-universal.sh",
     "build:polter": "pnpm run polter -- peekaboo -- --version",
     "app:restart": "./scripts/restart-peekaboo.sh",
     "build": "pnpm run build:cli",
     "test:safe": "swift test --package-path Apps/CLI -Xswiftc -DPEEKABOO_SKIP_AUTOMATION --no-parallel",
+    "test:linux": "swift test --package-path Apps/LinuxCLI",
     "test:automation": "PEEKABOO_INCLUDE_AUTOMATION_TESTS=true swift test --package-path Apps/CLI --no-parallel",
     "test:automation:read": "RUN_AUTOMATION_READ=true PEEKABOO_INCLUDE_AUTOMATION_TESTS=true swift test --package-path Apps/CLI --no-parallel",
     "test:automation:input": "PEEKABOO_INCLUDE_AUTOMATION_TESTS=true PEEKABOO_RUN_INPUT_AUTOMATION_TESTS=true swift test --package-path Core/PeekabooCore --no-parallel",
@@ -75,7 +77,8 @@
     "node": ">=22.0.0"
   },
   "os": [
-    "darwin"
+    "darwin",
+    "linux"
   ],
   "cpu": [
     "arm64",
