@@ -153,6 +153,7 @@ swift run --package-path Apps/LinuxCLI peekaboo-linux doctor
 swift run --package-path Apps/LinuxCLI peekaboo-linux list screens --json
 swift run --package-path Apps/LinuxCLI peekaboo-linux list windows --json
 swift run --package-path Apps/LinuxCLI peekaboo-linux image --mode screen --path /tmp/peekaboo-linux-smoke.png
+swift run --package-path Apps/LinuxCLI peekaboo-linux image --mode area --rect 0,0,640,360 --path /tmp/peekaboo-linux-area.png
 ```
 
 Verified on this host:
@@ -163,6 +164,7 @@ Verified on this host:
   frames, workspace names, and focused state.
 - `image --mode screen` produced `/tmp/peekaboo-linux-smoke.png`, a `2560x1440`
   PNG.
+- `image --mode area` produced `/tmp/peekaboo-linux-area.png`, a `640x360` PNG.
 
 ## Useful Local Smoke Commands
 

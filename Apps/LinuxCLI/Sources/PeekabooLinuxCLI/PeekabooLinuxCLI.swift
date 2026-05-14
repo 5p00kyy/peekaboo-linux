@@ -126,9 +126,31 @@ public struct PeekabooLinuxCLI: Sendable {
         case "screen":
             try self.capture.captureScreen(outputPath: path, screenName: screen)
             self.output(path)
+        case "area":
+            let rect = try Self.parseRect(try parser.requireOption("--rect"))
+            try self.capture.captureArea(rect, outputPath: path)
+            self.output(path)
         default:
             throw UsageError("unsupported image mode: \(mode)")
         }
+    }
+
+    private static func parseRect(_ value: String) throws -> PBRect {
+        let parts = value.split(separator: ",", omittingEmptySubsequences: false)
+        guard parts.count == 4 else {
+            throw UsageError("--rect must use x,y,width,height")
+        }
+
+        guard
+            let x = Double(parts[0]),
+            let y = Double(parts[1]),
+            let width = Double(parts[2]),
+            let height = Double(parts[3])
+        else {
+            throw UsageError("--rect values must be numbers")
+        }
+
+        return PBRect(x: x, y: y, width: width, height: height)
     }
 
     private func outputJSON<T: Encodable>(_ value: T) throws {
@@ -144,6 +166,7 @@ public struct PeekabooLinuxCLI: Sendable {
       peekaboo-linux list screens [--json]
       peekaboo-linux list windows [--json]
       peekaboo-linux image --mode screen --path PATH [--screen NAME]
+      peekaboo-linux image --mode area --rect X,Y,WIDTH,HEIGHT --path PATH
       peekaboo-linux --version
     """
 }
