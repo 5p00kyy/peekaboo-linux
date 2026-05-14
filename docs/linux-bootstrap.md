@@ -43,7 +43,8 @@ linux/cli-mvp
 
 Current draft PRs:
 
-- <https://github.com/5p00kyy/peekaboo-linux/pull/1>
+- <https://github.com/5p00kyy/peekaboo-linux/pull/1> portable types
+- <https://github.com/5p00kyy/peekaboo-linux/pull/2> Linux CLI MVP
 
 ## Submodules
 
