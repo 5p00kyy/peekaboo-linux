@@ -13,7 +13,7 @@ struct CommandRunnerTests {
         } catch CommandError.timedOut {
             didTimeOut = true
         } catch {
-            #expect(false)
+            #expect(Bool(false))
         }
 
         #expect(didTimeOut)
