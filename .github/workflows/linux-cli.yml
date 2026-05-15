@@ -1,0 +1,53 @@
+name: Linux CLI CI
+
+on:
+  push:
+    branches:
+      - 'linux/**'
+    paths:
+      - 'Apps/LinuxCLI/**'
+      - 'Core/PeekabooTypes/**'
+      - 'docs/linux-*.md'
+      - 'docs/peekaboo-linux-project-plan.md'
+      - 'package.json'
+      - '.github/workflows/linux-cli.yml'
+  pull_request:
+    branches:
+      - 'linux/**'
+    paths:
+      - 'Apps/LinuxCLI/**'
+      - 'Core/PeekabooTypes/**'
+      - 'docs/linux-*.md'
+      - 'docs/peekaboo-linux-project-plan.md'
+      - 'package.json'
+      - '.github/workflows/linux-cli.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: linux-cli-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  linux-cli:
+    name: Linux CLI build and tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - uses: SwiftyLab/setup-swift@v1
+        with:
+          swift-version: '6.2.1'
+
+      - name: Show Swift version
+        run: swift --version
+
+      - name: Test portable types
+        run: swift test --package-path Core/PeekabooTypes
+
+      - name: Test Linux CLI
+        run: swift test --package-path Apps/LinuxCLI
+
+      - name: Lint Linux docs
+        run: node scripts/docs-lint.mjs
